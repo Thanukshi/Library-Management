@@ -7,7 +7,7 @@ const LibrarianSchema = Mongoose.Schema(
       unique: true,
       required: true,
     },
-    librarian_id: {
+    librarian_email: {
       type: String,
       trim: true,
       lowercase: true,

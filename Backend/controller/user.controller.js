@@ -1,4 +1,5 @@
 const User = require("../model/user.model");
+const Librarian = require("../model/librarian.model");
 
 const utils = require("../lib/utils");
 
@@ -119,6 +120,142 @@ exports.registerUser = async function (req, res, next) {
   }
 };
 
+exports.loginUser = async function (req, res, next) {
+  const {
+    user_id,
+    librarian_id,
+    user_email,
+    librarian_email,
+    user_password,
+    libraian_password,
+    user_type,
+  } = req.body;
+  try {
+    if (user_type === "student") {
+      if (!user_email) {
+        return res.status(200).json({
+          code: 204,
+          status: "No Content",
+          Success: false,
+          message: "Please enter a your email address.",
+        });
+      } else if (!user_password) {
+        return res.status(200).json({
+          code: 204,
+          status: "No Content",
+          Success: false,
+          message: "Please enter a your password.",
+        });
+      } else {
+        const userEmail = await User.findOne({ user_email });
+
+        if (!userEmail) {
+          return res.status(200).json({
+            code: 203,
+            success: false,
+            status: "Non-Authoritative Information",
+            message:
+              "You are not a registerd user. Please register before login.",
+          });
+        } else {
+          const isValid = utils.validPassword(
+            user_password,
+            userEmail.hash,
+            userEmail.salt
+          );
+
+          if (isValid) {
+            const tokenObject = utils.issueJWT(userEmail);
+
+            res.status(200).json({
+              code: 202,
+              success: true,
+              status: "Accepted",
+              token: tokenObject.token,
+              expiresIn: tokenObject.expires,
+              sub: tokenObject.sub,
+            });
+          } else {
+            res.status(200).json({
+              code: 203,
+              success: false,
+              status: "Non-Authoritative Information",
+              msg: "You entered the wrong password. Please check again.",
+            });
+          }
+        }
+      }
+    } else if (user_type === "librarian") {
+      if (!librarian_email) {
+        return res.status(200).json({
+          code: 204,
+          status: "No Content",
+          Success: false,
+          message: "Please enter a your email address.",
+        });
+      } else if (!libraian_password) {
+        return res.status(200).json({
+          code: 204,
+          status: "No Content",
+          Success: false,
+          message: "Please enter a your password.",
+        });
+      } else {
+        const librarianEmail = await Librarian.findOne({ librarian_email });
+
+        if (!librarianEmail) {
+          return res.status(200).json({
+            code: 203,
+            success: false,
+            status: "Non-Authoritative Information",
+            message:
+              "You are not a registerd user. Please register before login.",
+          });
+        } else {
+          const isValid = utils.validPassword(
+            libraian_password,
+            librarianEmail.hash,
+            librarianEmail.salt
+          );
+
+          if (isValid) {
+            const tokenObject = utils.issueJWT(librarianEmail);
+
+            res.status(200).json({
+              code: 202,
+              success: true,
+              status: "Accepted",
+              token: tokenObject.token,
+              expiresIn: tokenObject.expires,
+              sub: librarianEmail,
+            });
+          } else {
+            res.status(200).json({
+              code: 203,
+              success: false,
+              status: "Non-Authoritative Information",
+              msg: "You entered the wrong password. Please check again.",
+            });
+          }
+        }
+      }
+    } else {
+      return res.status(200).json({
+        code: 203,
+        status: "Non-Authoritative Information",
+        Success: false,
+        message: "You are not a valid user.",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      code: 500,
+      status: "Internal Server Error",
+      Success: false,
+      message: error.message,
+    });
+  }
+};
 
 
 function validateEmail(email) {

@@ -1,6 +1,11 @@
 const Librarian = require("../../model/librarian.model");
 
+const utils = require("../../lib/utils");
+var LocalStorage = require("node-localstorage").LocalStorage,
+  localStorage = new LocalStorage("./scratch");
+
 exports.addLibrarian = async function (req, res, next) {
+  var librarianID;
   const { librarian_email, librarian_name, libraian_password } = req.body;
 
   try {
@@ -54,12 +59,34 @@ exports.addLibrarian = async function (req, res, next) {
         });
       }
 
+      var str = localStorage.getItem("ID");
+      console.log("str", str);
+      var id = parseInt(str);
+
+      if (str === "NaN" || str === "" || str === null) {
+        id = 1;
+      } else {
+        id = id + 1;
+      }
+
+      function padLeadingZeros(num, size) {
+        var s = num + "";
+        while (s.length < size) s = "0" + s;
+        return s;
+      }
+
+      librarianID = padLeadingZeros(id, 6);
+      librarianID = "LB" + librarianID;
+
+      console.log("first", librarianID);
+
       const saltHash = utils.genPassword(libraian_password);
 
       const salt = saltHash.salt;
       const hash = saltHash.hash;
 
       const newUser = new Librarian({
+        librarian_id: librarianID,
         librarian_email,
         librarian_name,
         hash: hash,
@@ -86,3 +113,14 @@ exports.addLibrarian = async function (req, res, next) {
     });
   }
 };
+
+function validateEmail(email) {
+  const re =
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+}
+
+function validatePassword(password) {
+  var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+  return re.test(password);
+}

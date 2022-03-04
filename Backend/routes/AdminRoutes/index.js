@@ -1,11 +1,11 @@
 const routes = require("express").Router();
 
-const UserRoutes = require("../../controller/user.controller");
+const AdminRoutes = require("../../controller/Admin/librarian.controller");
 const utils = require("../../lib/utils");
 
-routes.post("/register", UserRoutes.registerUser);
+routes.post("/add_librarian", AdminRoutes.addLibrarian);
 
-routes.post("/login", UserRoutes.loginUser);
+// routes.post("/login", UserRoutes.loginUser);
 
 // routes.get("/getAllUser", UserRoutes.getAllUsers);
 
