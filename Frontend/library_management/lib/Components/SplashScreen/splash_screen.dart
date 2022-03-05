@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:library_management/Components/Onboard_Screen/onboard_screen_one.dart';
+import 'package:library_management/Components/LoginScreen/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -44,7 +44,7 @@ class InitState extends State<SplashScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const OnboardScreenOne(),
+        builder: (context) => LoginScreen(),
       ),
     );
     //}
