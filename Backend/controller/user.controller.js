@@ -4,8 +4,7 @@ const Librarian = require("../model/librarian.model");
 const utils = require("../lib/utils");
 
 exports.registerUser = async function (req, res, next) {
-  const { user_id, user_email, user_name, user_phone, user_password } =
-    req.body;
+  const { user_id, user_email, user_name, user_password } = req.body;
 
   try {
     if (!user_id) {
@@ -29,13 +28,6 @@ exports.registerUser = async function (req, res, next) {
         Success: false,
         message: "Please enter a your user name.",
       });
-    } else if (!user_phone) {
-      return res.status(200).json({
-        code: 204,
-        status: "No Content",
-        Success: false,
-        message: "Please enter a your phone number.",
-      });
     } else if (!validateEmail(user_email)) {
       return res.status(200).json({
         code: 406,
@@ -57,7 +49,7 @@ exports.registerUser = async function (req, res, next) {
         return res.status(200).json({
           code: 208,
           success: false,
-          status: "Already Reported",
+          status: "Student ID is Already Reported",
           message: "This id is already exists.",
         });
       }
@@ -67,18 +59,8 @@ exports.registerUser = async function (req, res, next) {
         return res.status(200).json({
           code: 208,
           success: false,
-          status: "Already Reported",
+          status: "Email is Already Reported",
           message: "This email is already exists.",
-        });
-      }
-
-      const userPhone = await User.findOne({ user_phone });
-      if (userPhone) {
-        return res.status(200).json({
-          code: 208,
-          success: false,
-          status: "Already Reported",
-          message: "This phone number is already exists.",
         });
       }
 
@@ -91,7 +73,6 @@ exports.registerUser = async function (req, res, next) {
         user_id,
         user_email,
         user_name,
-        user_phone,
         hash: hash,
         salt: salt,
         user_type: "student",
@@ -132,6 +113,14 @@ exports.loginUser = async function (req, res, next) {
   } = req.body;
   try {
     if (user_type === "student") {
+      if (!user_id) {
+        return res.status(200).json({
+          code: 204,
+          status: "No Content",
+          Success: false,
+          message: "Please enter a your student id number.",
+        });
+      }
       if (!user_email) {
         return res.status(200).json({
           code: 204,
@@ -256,7 +245,6 @@ exports.loginUser = async function (req, res, next) {
     });
   }
 };
-
 
 function validateEmail(email) {
   const re =

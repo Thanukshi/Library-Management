@@ -1,5 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:library_management/Components/Common/common.dart';
+import 'package:library_management/Components/HomeScreen/home_screen.dart';
 import 'package:library_management/Components/LoginScreen/login_screen.dart';
+import 'package:motion_toast/motion_toast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -15,11 +20,10 @@ class InitState extends State<RegisterScreen> {
   }
 
   Widget initWidget() {
+    String userId = '';
     String userEmail = '';
     String username = '';
-    String userPhone = '';
     String userPass = '';
-    String confirmPass = '';
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -50,7 +54,7 @@ class InitState extends State<RegisterScreen> {
                       width: 150,
                     ),
                     Container(
-                      margin: const EdgeInsets.only(right: 20, top: 10),
+                      margin: const EdgeInsets.only(right: 20, top: 20),
                       alignment: Alignment.bottomRight,
                       child: const Text(
                         "Register",
@@ -65,7 +69,7 @@ class InitState extends State<RegisterScreen> {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+              margin: const EdgeInsets.only(left: 20, right: 20, top: 40),
               padding: const EdgeInsets.only(left: 20, right: 20),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
@@ -89,7 +93,7 @@ class InitState extends State<RegisterScreen> {
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none),
                 onChanged: (value) {
-                  userEmail = value;
+                  userId = value;
                 },
               ),
             ),
@@ -166,35 +170,6 @@ class InitState extends State<RegisterScreen> {
               ),
               alignment: Alignment.center,
               child: TextField(
-                cursorColor: const Color(0xFF276955),
-                decoration: const InputDecoration(
-                    icon: Icon(
-                      Icons.phone,
-                      color: Color(0xFF276955),
-                    ),
-                    hintText: "Enter your phone number",
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none),
-                onChanged: (value) {
-                  userPhone = value;
-                },
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: Colors.grey[200],
-                boxShadow: const [
-                  BoxShadow(
-                      offset: Offset(0, 10),
-                      blurRadius: 50,
-                      color: Color(0xffEEEEEE))
-                ],
-              ),
-              alignment: Alignment.center,
-              child: TextField(
                 obscureText: true,
                 cursorColor: const Color(0xFF276955),
                 decoration: const InputDecoration(
@@ -211,10 +186,11 @@ class InitState extends State<RegisterScreen> {
               ),
             ),
             GestureDetector(
-              onTap: () => {},
+              onTap: () =>
+                  {registerUser(userId, userEmail, username, userPass)},
               // {registerUser(userEmail, username, userPhone, userPass)},
               child: Container(
-                margin: const EdgeInsets.only(left: 20, right: 20, top: 40),
+                margin: const EdgeInsets.only(left: 20, right: 20, top: 30),
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 alignment: Alignment.center,
                 height: 50,
@@ -261,7 +237,8 @@ class InitState extends State<RegisterScreen> {
                     child: const Text(
                       "Login",
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                         color: Color(0xFF276955),
                       ),
                     ),
@@ -275,133 +252,123 @@ class InitState extends State<RegisterScreen> {
     );
   }
 
-//   void registerUser(
-//       String email, String username, String phone, String password) async {
-//     if (email == "" || email == Null) {
-//       Fluttertoast.showToast(
-//           msg: "Please Enter Email",
-//           fontSize: 18,
-//           gravity: ToastGravity.BOTTOM,
-//           backgroundColor: Colors.red,
-//           textColor: Colors.white);
-//     } else if (username == "" || username == Null) {
-//       Fluttertoast.showToast(
-//           msg: "Please Enter Username",
-//           fontSize: 18,
-//           gravity: ToastGravity.BOTTOM,
-//           backgroundColor: Colors.red,
-//           textColor: Colors.white);
-//     } else if (phone == "" || phone == Null) {
-//       Fluttertoast.showToast(
-//           msg: "Please Enter Phone",
-//           fontSize: 18,
-//           gravity: ToastGravity.BOTTOM,
-//           backgroundColor: Colors.red,
-//           textColor: Colors.white);
-//     } else if (password == "" || password == Null) {
-//       Fluttertoast.showToast(
-//           msg: "Please Enter Password",
-//           fontSize: 18,
-//           gravity: ToastGravity.BOTTOM,
-//           backgroundColor: Colors.red,
-//           textColor: Colors.white);
-//     } else if (!isEmail(email)) {
-//       Fluttertoast.showToast(
-//           msg: "Please enter a valid email.",
-//           fontSize: 18,
-//           gravity: ToastGravity.BOTTOM,
-//           backgroundColor: Colors.red,
-//           textColor: Colors.white);
-//     } else if (!isPassword(password)) {
-//       Fluttertoast.showToast(
-//           msg:
-//               "Password has 8 characters, It must have one uppercase letter, lowercase letter, number and special character.",
-//           fontSize: 18,
-//           gravity: ToastGravity.BOTTOM,
-//           backgroundColor: Colors.red,
-//           textColor: Colors.white);
-//     }
-//     try {
-//       var response =
-//           await Dio().post(CommonService.LoanURL + "/user/register", data: {
-//         "user_email": email,
-//         "user_name": username,
-//         "user_phone": phone,
-//         "user_password": password
-//       });
-//       print("datasss" + response.data.toString());
+  void registerUser(
+      String id, String email, String username, String password) async {
+    // ignore: unrelated_type_equality_checks
+    if (id == "" || id == Null) {
+      showErrorToast(context, "Student ID Error",
+          "Student id can no be empty. Please Enter Student id.");
+    } else if (email == "" || email == Null) {
+      showErrorToast(
+          context, "Email Error", "Email can no be empty. Please Enter Email.");
+    } else if (username == "" || username == Null) {
+      showErrorToast(context, "Username Error",
+          "Username can no be empty. Please Enter Username.");
+    } else if (password == "" || password == Null) {
+      showErrorToast(context, "Password Error",
+          "Password can no be empty. Please Enter Password.");
+    } else if (!isEmail(email)) {
+      showErrorToast(context, "Email Error",
+          "This email address is invalid. Please enter a valid email address.");
+    } else if (!isPassword(password)) {
+      showErrorToast(
+        context,
+        "Password Error",
+        "Password has 8 characters, uppercase and lowercase letter, number and special character.",
+      );
+    } else {
+      try {
+        var response =
+            await Dio().post(CommonService.URL + "/user/register", data: {
+          "user_id": id,
+          "user_email": email,
+          "user_name": username,
+          "user_password": password
+        });
+        // ignore: avoid_print
+        print("datasss" + response.data.toString());
 
-//       if (response.statusCode == 200) {
-//         if (response.data["code"] == 208 &&
-//             response.data["status"] == "Email Exist") {
-//           Fluttertoast.showToast(
-//               msg: response.data["message"].toString(),
-//               fontSize: 18,
-//               gravity: ToastGravity.BOTTOM,
-//               backgroundColor: Colors.red,
-//               textColor: Colors.white);
-//         } else if (response.data["code"] == 208 &&
-//             response.data["status"] == "Username Exist") {
-//           Fluttertoast.showToast(
-//               msg: response.data["message"].toString(),
-//               fontSize: 18,
-//               gravity: ToastGravity.BOTTOM,
-//               backgroundColor: Colors.red,
-//               textColor: Colors.white);
-//         } else if (response.data["code"] == 208 &&
-//             response.data["status"] == "Phone Exist") {
-//           Fluttertoast.showToast(
-//               msg: response.data["message"].toString(),
-//               fontSize: 18,
-//               gravity: ToastGravity.BOTTOM,
-//               backgroundColor: Colors.red,
-//               textColor: Colors.white);
-//         } else {
-//           final prefs = await SharedPreferences.getInstance();
-//           await prefs.setString('token', response.data["token"].toString());
-//           await prefs.setString(
-//               'user_email', response.data["sub"]["user_email"].toString());
-//           await prefs.setString(
-//               'user_name', response.data["sub"]["user_name"].toString());
-//           await prefs.setString(
-//               'user_phone', response.data["sub"]["user_phone"].toString());
-//           // final String? token = prefs.getString('token');
-//           var userEmail = prefs.getString('user_email');
-//           print("user_Email : $userEmail");
+        if (response.statusCode == 200) {
+          if (response.data["code"] == 208 &&
+              response.data["status"] == "Student ID is Already Reported") {
+            showErrorToast(context, "Student ID Error",
+                response.data["message"].toString());
+          } else if (response.data["code"] == 208 &&
+              response.data["status"] == "Email is Already Reported") {
+            showErrorToast(context, "Email Address Error",
+                response.data["message"].toString());
+          } else {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('token', response.data["token"].toString());
+            await prefs.setString(
+                'user_id', response.data["sub"]["user_id"].toString());
+            await prefs.setString(
+                'user_email', response.data["sub"]["user_email"].toString());
+            await prefs.setString(
+                'user_name', response.data["sub"]["user_name"].toString());
+            // final String? token = prefs.getString('token');
+            var userEmail = prefs.getString('user_email');
+            print("user_Email : $userEmail");
 
-//           Fluttertoast.showToast(
-//               msg: "Registered Successfully.",
-//               fontSize: 18,
-//               gravity: ToastGravity.BOTTOM,
-//               backgroundColor: Colors.green,
-//               textColor: Colors.white);
+            showSuccessToast(
+                context, "Registration", "You were registerd Succussfully.");
 
-//           Navigator.push(
-//               context,
-//               MaterialPageRoute(
-//                 builder: (context) => HomeScreen(),
-//               ));
-//         }
-//       }
-//     } catch (e) {
-//       print(e);
-//     }
-//   }
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                ));
+          }
+        }
+      } catch (e) {
+        // ignore: avoid_print
+        print(e);
+      }
+    }
+  }
 
-//   bool isEmail(String email) {
-//     String p =
-//         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  bool isEmail(String email) {
+    String p =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
-//     RegExp regExp = new RegExp(p);
+    RegExp regExp = RegExp(p);
 
-//     return regExp.hasMatch(email);
-//   }
+    return regExp.hasMatch(email);
+  }
 
-//   bool isPassword(String password) {
-//     String p = r'(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$';
+  bool isPassword(String password) {
+    String p = r'(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$';
 
-//     RegExp regExp = new RegExp(p);
+    RegExp regExp = RegExp(p);
 
-//     return regExp.hasMatch(password);
-//   }
+    return regExp.hasMatch(password);
+  }
+
+  void showSuccessToast(context, toastTitle, toastDescription) {
+    MotionToast.success(
+      description: Text(
+        "$toastDescription",
+        style: const TextStyle(fontSize: 14),
+      ),
+      title: Text(
+        "$toastTitle",
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ).show(context);
+  }
+
+  void showErrorToast(context, toastTitle, toastDescription) {
+    MotionToast.error(
+      description: Text(
+        "$toastDescription",
+        style: const TextStyle(fontSize: 14),
+      ),
+      title: Text(
+        "$toastTitle",
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
+    ).show(context);
+  }
 }

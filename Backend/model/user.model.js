@@ -17,10 +17,6 @@ const UserSchema = Mongoose.Schema(
       unique: true,
       required: true,
     },
-    user_phone: {
-      type: String,
-      required: true,
-    },
     hash: {
       type: String,
     },

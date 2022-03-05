@@ -1,5 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:library_management/Components/Common/common.dart';
+import 'package:library_management/Components/HomeScreen/home_screen.dart';
 import 'package:library_management/Components/RegisterScreen/register_screen.dart';
+import 'package:motion_toast/motion_toast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -181,6 +186,7 @@ class InitState extends State<LoginScreen> {
                       "Register",
                       style: TextStyle(
                         fontSize: 20,
+                        fontWeight: FontWeight.bold,
                         color: Color(0xFF276955),
                       ),
                     ),
@@ -194,117 +200,126 @@ class InitState extends State<LoginScreen> {
     );
   }
 
-//   void loginUser(String email, String password) async {
-//     if (email == "" || email == Null) {
-//       Fluttertoast.showToast(
-//           msg: "Please Enter Email",
-//           fontSize: 18,
-//           gravity: ToastGravity.BOTTOM,
-//           backgroundColor: Colors.red,
-//           textColor: Colors.white);
-//     } else if (password == "" || password == Null) {
-//       Fluttertoast.showToast(
-//           msg: "Please Enter Password",
-//           fontSize: 18,
-//           gravity: ToastGravity.BOTTOM,
-//           backgroundColor: Colors.red,
-//           textColor: Colors.white);
-//     } else if (!isEmail(email)) {
-//       Fluttertoast.showToast(
-//           msg: "Please enter a valid email.",
-//           fontSize: 18,
-//           gravity: ToastGravity.BOTTOM,
-//           backgroundColor: Colors.red,
-//           textColor: Colors.white);
-//     } else if (!isPassword(password)) {
-//       Fluttertoast.showToast(
-//           msg:
-//               "Password has 8 characters, It must have one uppercase letter, lowercase letter, number and special character.",
-//           fontSize: 18,
-//           gravity: ToastGravity.BOTTOM,
-//           backgroundColor: Colors.red,
-//           textColor: Colors.white);
-//     } else {
-//       try {
-//         final prefs = await SharedPreferences.getInstance();
-//         final String? token = prefs.getString('token');
+  // void loginUser(String email, String password) async {
+  //   if (email == "" || email == Null) {
+  //     showErrorToast(
+  //         context, "Email Error", "Email can no be empty. Please Enter Email.");
+  //   } else if (password == "" || password == Null) {
+  //     showErrorToast(context, "Password Error",
+  //         "Password can no be empty. Please Enter Password.");
+  //   } else if (!isEmail(email)) {
+  //     showErrorToast(context, "Email Error",
+  //         "This email address is invalid. Please enter a valid email address.");
+  //   } else {
+  //     try {
+  //       final prefs = await SharedPreferences.getInstance();
+  //       final String? token = prefs.getString('token');
 
-//         if ("{$token}" == Null || "{$token}" == '{null}') {
-//           var response = await Dio().post(CommonService.LoanURL + "/user/login",
-//               data: {"user_email": email, "user_password": password});
-//           print("datasss" + response.data.toString());
+  //       // ignore: unrelated_type_equality_checks
+  //       if ("{$token}" == Null || "{$token}" == '{null}') {
+  //         var response = await Dio().post(CommonService.URL + "/user/login",
+  //             data: {"user_email": email, "user_password": password});
+  //         print("datasss" + response.data.toString());
 
-//           if (response.statusCode == 200) {
-//             if (response.data['code'] == 203 &&
-//                 response.data['status'] == "Bad Request") {
-//               Fluttertoast.showToast(
-//                   msg: response.data['message'].toString(),
-//                   fontSize: 18,
-//                   gravity: ToastGravity.BOTTOM,
-//                   backgroundColor: Colors.red,
-//                   textColor: Colors.white);
-//             } else if (response.data['code'] == 203 &&
-//                 response.data['status'] == "Password Error") {
-//               Fluttertoast.showToast(
-//                   msg: response.data['msg'].toString(),
-//                   fontSize: 18,
-//                   gravity: ToastGravity.BOTTOM,
-//                   backgroundColor: Colors.red,
-//                   textColor: Colors.white);
-//             } else if (response.data["code"] == 201) {
-//               await prefs.setString('token', response.data["token"].toString());
+  //         if (response.statusCode == 200) {
+  //           if (response.data['code'] == 203 &&
+  //               response.data['status'] == "Bad Request") {
+  //             Fluttertoast.showToast(
+  //                 msg: response.data['message'].toString(),
+  //                 fontSize: 18,
+  //                 gravity: ToastGravity.BOTTOM,
+  //                 backgroundColor: Colors.red,
+  //                 textColor: Colors.white);
+  //           } else if (response.data['code'] == 203 &&
+  //               response.data['status'] == "Password Error") {
+  //             Fluttertoast.showToast(
+  //                 msg: response.data['msg'].toString(),
+  //                 fontSize: 18,
+  //                 gravity: ToastGravity.BOTTOM,
+  //                 backgroundColor: Colors.red,
+  //                 textColor: Colors.white);
+  //           } else if (response.data["code"] == 201) {
+  //             await prefs.setString('token', response.data["token"].toString());
 
-//               print(response.data["token"]);
-//               print("token {$token}");
+  //             print(response.data["token"]);
+  //             print("token {$token}");
 
-//               Fluttertoast.showToast(
-//                   msg: "Successfully Logged",
-//                   fontSize: 18,
-//                   gravity: ToastGravity.BOTTOM,
-//                   backgroundColor: Colors.green,
-//                   textColor: Colors.white);
-//               Navigator.push(
-//                   context,
-//                   MaterialPageRoute(
-//                     builder: (context) => HomeScreen(),
-//                   ));
-//             } else {
-//               Fluttertoast.showToast(
-//                   msg: "Something went wrong....",
-//                   fontSize: 18,
-//                   gravity: ToastGravity.BOTTOM,
-//                   backgroundColor: Colors.red,
-//                   textColor: Colors.white);
-//             }
-//           }
-//         } else {
-//           Fluttertoast.showToast(
-//               msg: "Something went wrong....",
-//               fontSize: 18,
-//               gravity: ToastGravity.BOTTOM,
-//               backgroundColor: Colors.red,
-//               textColor: Colors.white);
-//         }
-//       } catch (e) {
-//         print(e);
-//       }
-//     }
-//   }
+  //             Fluttertoast.showToast(
+  //                 msg: "Successfully Logged",
+  //                 fontSize: 18,
+  //                 gravity: ToastGravity.BOTTOM,
+  //                 backgroundColor: Colors.green,
+  //                 textColor: Colors.white);
+  //             Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                   builder: (context) => HomeScreen(),
+  //                 ));
+  //           } else {
+  //             Fluttertoast.showToast(
+  //                 msg: "Something went wrong....",
+  //                 fontSize: 18,
+  //                 gravity: ToastGravity.BOTTOM,
+  //                 backgroundColor: Colors.red,
+  //                 textColor: Colors.white);
+  //           }
+  //         }
+  //       } else {
+  //         Fluttertoast.showToast(
+  //             msg: "Something went wrong....",
+  //             fontSize: 18,
+  //             gravity: ToastGravity.BOTTOM,
+  //             backgroundColor: Colors.red,
+  //             textColor: Colors.white);
+  //       }
+  //     } catch (e) {
+  //       print(e);
+  //     }
+  //   }
+  // }
 
-//   bool isEmail(String email) {
-//     String p =
-//         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  bool isEmail(String email) {
+    String p =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
-//     RegExp regExp = new RegExp(p);
+    RegExp regExp = new RegExp(p);
 
-//     return regExp.hasMatch(email);
-//   }
+    return regExp.hasMatch(email);
+  }
 
-//   bool isPassword(String password) {
-//     String p = r'(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$';
+  bool isPassword(String password) {
+    String p = r'(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$';
 
-//     RegExp regExp = new RegExp(p);
+    RegExp regExp = new RegExp(p);
 
-//     return regExp.hasMatch(password);
-//   }
+    return regExp.hasMatch(password);
+  }
+
+  void showSuccessToast(context, toastTitle, toastDescription) {
+    MotionToast.success(
+      description: Text(
+        "$toastDescription",
+        style: const TextStyle(fontSize: 14),
+      ),
+      title: Text(
+        "$toastTitle",
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ).show(context);
+  }
+
+  void showErrorToast(context, toastTitle, toastDescription) {
+    MotionToast.error(
+      description: Text(
+        "$toastDescription",
+        style: const TextStyle(fontSize: 14),
+      ),
+      title: Text(
+        "$toastTitle",
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
+    ).show(context);
+  }
 }
