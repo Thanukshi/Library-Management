@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:library_management/Components/Onboard_Screen/onboard_screen_one.dart';
 import 'package:library_management/Components/Onboard_Screen/slanding_cliiper.dart';
+import 'package:library_management/Components/SplashScreen/splash_screen.dart';
 import 'package:library_management/Constatnt/constants.dart';
 
 class OnboardScreenThree extends StatelessWidget {
@@ -148,7 +148,7 @@ class OnboardScreenThree extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const OnboardScreenOne(),
+                          builder: (_) => const SplashScreen(),
                         ),
                       );
                     },
