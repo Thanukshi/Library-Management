@@ -112,15 +112,7 @@ exports.loginUser = async function (req, res, next) {
     user_type,
   } = req.body;
   try {
-    if (user_type === "student") {
-      if (!user_id) {
-        return res.status(200).json({
-          code: 204,
-          status: "No Content",
-          Success: false,
-          message: "Please enter a your student id number.",
-        });
-      }
+    if (user_type === "Student") {
       if (!user_email) {
         return res.status(200).json({
           code: 204,
@@ -168,13 +160,13 @@ exports.loginUser = async function (req, res, next) {
             res.status(200).json({
               code: 203,
               success: false,
-              status: "Non-Authoritative Information",
+              status: "Password - Non-Authoritative Information",
               msg: "You entered the wrong password. Please check again.",
             });
           }
         }
       }
-    } else if (user_type === "librarian") {
+    } else if (user_type === "Librarian") {
       if (!librarian_email) {
         return res.status(200).json({
           code: 204,
@@ -222,7 +214,7 @@ exports.loginUser = async function (req, res, next) {
             res.status(200).json({
               code: 203,
               success: false,
-              status: "Non-Authoritative Information",
+              status: "Password - Non-Authoritative Information",
               msg: "You entered the wrong password. Please check again.",
             });
           }

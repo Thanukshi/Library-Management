@@ -14,12 +14,19 @@ class LoginScreen extends StatefulWidget {
 }
 
 class InitState extends State<LoginScreen> {
+  String? userValue;
+
   @override
   Widget build(BuildContext context) {
     return initWidget();
   }
 
   Widget initWidget() {
+    final userTypes = [
+      'Student',
+      'Librarian',
+    ];
+
     String userEmail = '';
     String userPass = '';
     return Scaffold(
@@ -67,7 +74,44 @@ class InitState extends State<LoginScreen> {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(left: 20, right: 20, top: 70),
+                width: 600,
+                margin: const EdgeInsets.only(
+                    top: 40, left: 20, bottom: 5, right: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
+                  vertical: 2,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.0),
+                  border: Border.all(
+                    color: const Color(0xFF276955),
+                    width: 4,
+                  ),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    hint: const Text(
+                      "Select User Type",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    value: userValue,
+                    iconSize: 36,
+                    icon: const Icon(
+                      Icons.arrow_drop_down,
+                      color: Color(0xFF276955),
+                    ),
+                    items: userTypes.map(buildMenuItem).toList(),
+                    onChanged: (value) => setState(
+                      () => userValue = value,
+                    ),
+                  ),
+                )),
+            Container(
+              margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
               padding: const EdgeInsets.only(left: 20, right: 20),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
@@ -134,10 +178,10 @@ class InitState extends State<LoginScreen> {
               ),
             ),
             GestureDetector(
-              onTap: () => {},
+              onTap: () => {loginUser(userValue!, userEmail, userPass)},
               //{loginUser(userEmail, userPass)},
               child: Container(
-                margin: const EdgeInsets.only(left: 20, right: 20, top: 60),
+                margin: const EdgeInsets.only(left: 20, right: 20, top: 30),
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 alignment: Alignment.center,
                 height: 50,
@@ -200,83 +244,77 @@ class InitState extends State<LoginScreen> {
     );
   }
 
-  // void loginUser(String email, String password) async {
-  //   if (email == "" || email == Null) {
-  //     showErrorToast(
-  //         context, "Email Error", "Email can no be empty. Please Enter Email.");
-  //   } else if (password == "" || password == Null) {
-  //     showErrorToast(context, "Password Error",
-  //         "Password can no be empty. Please Enter Password.");
-  //   } else if (!isEmail(email)) {
-  //     showErrorToast(context, "Email Error",
-  //         "This email address is invalid. Please enter a valid email address.");
-  //   } else {
-  //     try {
-  //       final prefs = await SharedPreferences.getInstance();
-  //       final String? token = prefs.getString('token');
+  DropdownMenuItem<String> buildMenuItem(String item) => DropdownMenuItem(
+        value: item,
+        child: Text(
+          item,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+      );
 
-  //       // ignore: unrelated_type_equality_checks
-  //       if ("{$token}" == Null || "{$token}" == '{null}') {
-  //         var response = await Dio().post(CommonService.URL + "/user/login",
-  //             data: {"user_email": email, "user_password": password});
-  //         print("datasss" + response.data.toString());
+  void loginUser(String userType, String email, String password) async {
+    print("user type" + userType);
+    if (email == "" || email == Null) {
+      showErrorToast(
+          context, "Email Error", "Email can no be empty. Please Enter Email.");
+    } else if (password == "" || password == Null) {
+      showErrorToast(context, "Password Error",
+          "Password can no be empty. Please Enter Password.");
+    } else if (!isEmail(email)) {
+      showErrorToast(context, "Email Error",
+          "This email address is invalid. Please enter a valid email address.");
+    } else {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final String? token = prefs.getString('token');
 
-  //         if (response.statusCode == 200) {
-  //           if (response.data['code'] == 203 &&
-  //               response.data['status'] == "Bad Request") {
-  //             Fluttertoast.showToast(
-  //                 msg: response.data['message'].toString(),
-  //                 fontSize: 18,
-  //                 gravity: ToastGravity.BOTTOM,
-  //                 backgroundColor: Colors.red,
-  //                 textColor: Colors.white);
-  //           } else if (response.data['code'] == 203 &&
-  //               response.data['status'] == "Password Error") {
-  //             Fluttertoast.showToast(
-  //                 msg: response.data['msg'].toString(),
-  //                 fontSize: 18,
-  //                 gravity: ToastGravity.BOTTOM,
-  //                 backgroundColor: Colors.red,
-  //                 textColor: Colors.white);
-  //           } else if (response.data["code"] == 201) {
-  //             await prefs.setString('token', response.data["token"].toString());
+        if ("{$token}" == Null || "{$token}" == '{null}') {
+          var response = await Dio().post(CommonService.URL + "/user/login",
+              data: {
+                "user_type": userType,
+                "user_email": email,
+                "user_password": password
+              });
+          print("datasss" + response.data.toString());
 
-  //             print(response.data["token"]);
-  //             print("token {$token}");
+          if (response.statusCode == 200) {
+            if (response.data['code'] == 203 &&
+                response.data['status'] == "Non-Authoritative Information") {
+              showErrorToast(
+                  context, "Email Error", response.data["message"].toString());
+            } else if (response.data['code'] == 203 &&
+                response.data['status'] ==
+                    "Password - Non-Authoritative Information") {
+              showErrorToast(
+                  context, "Password Error", response.data["msg"].toString());
+            } else if (response.data["code"] == 202) {
+              await prefs.setString('token', response.data["token"].toString());
 
-  //             Fluttertoast.showToast(
-  //                 msg: "Successfully Logged",
-  //                 fontSize: 18,
-  //                 gravity: ToastGravity.BOTTOM,
-  //                 backgroundColor: Colors.green,
-  //                 textColor: Colors.white);
-  //             Navigator.push(
-  //                 context,
-  //                 MaterialPageRoute(
-  //                   builder: (context) => HomeScreen(),
-  //                 ));
-  //           } else {
-  //             Fluttertoast.showToast(
-  //                 msg: "Something went wrong....",
-  //                 fontSize: 18,
-  //                 gravity: ToastGravity.BOTTOM,
-  //                 backgroundColor: Colors.red,
-  //                 textColor: Colors.white);
-  //           }
-  //         }
-  //       } else {
-  //         Fluttertoast.showToast(
-  //             msg: "Something went wrong....",
-  //             fontSize: 18,
-  //             gravity: ToastGravity.BOTTOM,
-  //             backgroundColor: Colors.red,
-  //             textColor: Colors.white);
-  //       }
-  //     } catch (e) {
-  //       print(e);
-  //     }
-  //   }
-  // }
+              print(response.data["token"]);
+              print("token {$token}");
+
+              // showSuccessToast(
+              //     context, "Login", "You were logged successfully.");
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomeScreen(),
+                  ));
+            } else {
+              showErrorToast(context, "Error", "1Something went wrong...");
+            }
+          }
+        } else {
+          showErrorToast(context, "Error", "2Something went wrong...");
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
 
   bool isEmail(String email) {
     String p =

@@ -310,9 +310,6 @@ class InitState extends State<RegisterScreen> {
             var userEmail = prefs.getString('user_email');
             print("user_Email : $userEmail");
 
-            showSuccessToast(
-                context, "Registration", "You were registerd Succussfully.");
-
             Navigator.push(
                 context,
                 MaterialPageRoute(

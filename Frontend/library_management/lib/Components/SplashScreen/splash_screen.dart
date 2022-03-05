@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:library_management/Components/HomeScreen/home_screen.dart';
 import 'package:library_management/Components/LoginScreen/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -11,22 +13,22 @@ class SplashScreen extends StatefulWidget {
 }
 
 class InitState extends State<SplashScreen> {
-  // var loadToken;
+  var loadToken;
   @override
   void initState() {
     // ignore: todo
     // TODO: implement initState
     super.initState();
     startTimer();
-    // getToken();
+    getToken();
   }
 
-  // getToken() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final String? token = prefs.getString('token');
-  //   loadToken = token;
-  //   print("token {$token}");
-  // }
+  getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+    loadToken = token;
+    print("token {$token}");
+  }
 
   startTimer() async {
     var duration = const Duration(seconds: 3);
@@ -34,20 +36,20 @@ class InitState extends State<SplashScreen> {
   }
 
   loginRoute() {
-    // if (loadToken != null) {
-    //   Navigator.push(
-    //       context,
-    //       MaterialPageRoute(
-    //         builder: (context) => HomeScreen(),
-    //       ));
-    // } else {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
-      ),
-    );
-    //}
+    if (loadToken != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(),
+          ));
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginScreen(),
+        ),
+      );
+    }
   }
 
   @override
