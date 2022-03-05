@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.library_management">
    <application
-        android:label="library_management"
+        android:label="UNI LIB"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

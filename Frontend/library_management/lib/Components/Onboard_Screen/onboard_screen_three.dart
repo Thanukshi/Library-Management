@@ -131,7 +131,14 @@ class OnboardScreenThree extends StatelessWidget {
                   child: FlatButton(
                     splashColor: const Color(0xFF41A58D),
                     // ignore: avoid_print
-                    onPressed: () => print("Skip"),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SplashScreen(),
+                        ),
+                      );
+                    },
                     child: const Text(
                       "Skip",
                       style: TextStyle(

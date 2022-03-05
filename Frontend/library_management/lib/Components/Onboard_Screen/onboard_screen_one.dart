@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:library_management/Components/Onboard_Screen/onboard_screen_two.dart';
 import 'package:library_management/Components/Onboard_Screen/slanding_cliiper.dart';
+import 'package:library_management/Components/SplashScreen/splash_screen.dart';
 import 'package:library_management/Constatnt/constants.dart';
 
 class OnboardScreenOne extends StatelessWidget {
@@ -131,7 +132,14 @@ class OnboardScreenOne extends StatelessWidget {
                   child: FlatButton(
                     splashColor: const Color(0xFF41A58D),
                     // ignore: avoid_print
-                    onPressed: () => print("Skip"),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SplashScreen(),
+                        ),
+                      );
+                    },
                     child: const Text(
                       "Skip",
                       style: TextStyle(
