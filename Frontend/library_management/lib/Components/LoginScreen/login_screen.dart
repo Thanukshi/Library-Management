@@ -272,39 +272,80 @@ class InitState extends State<LoginScreen> {
         final String? token = prefs.getString('token');
 
         if ("{$token}" == Null || "{$token}" == '{null}') {
-          var response = await Dio().post(CommonService.URL + "/user/login",
-              data: {
-                "user_type": userType,
-                "user_email": email,
-                "user_password": password
-              });
-          print("datasss" + response.data.toString());
+          if (userType == "Student") {
+            var response = await Dio().post(CommonService.URL + "/user/login",
+                data: {
+                  "user_type": userType,
+                  "user_email": email,
+                  "user_password": password
+                });
+            print("datasss" + response.data.toString());
 
-          if (response.statusCode == 200) {
-            if (response.data['code'] == 203 &&
-                response.data['status'] == "Non-Authoritative Information") {
-              showErrorToast(
-                  context, "Email Error", response.data["message"].toString());
-            } else if (response.data['code'] == 203 &&
-                response.data['status'] ==
-                    "Password - Non-Authoritative Information") {
-              showErrorToast(
-                  context, "Password Error", response.data["msg"].toString());
-            } else if (response.data["code"] == 202) {
-              await prefs.setString('token', response.data["token"].toString());
+            if (response.statusCode == 200) {
+              if (response.data['code'] == 203 &&
+                  response.data['status'] == "Non-Authoritative Information") {
+                showErrorToast(context, "Email Error",
+                    response.data["message"].toString());
+              } else if (response.data['code'] == 203 &&
+                  response.data['status'] ==
+                      "Password - Non-Authoritative Information") {
+                showErrorToast(
+                    context, "Password Error", response.data["msg"].toString());
+              } else if (response.data["code"] == 202) {
+                await prefs.setString(
+                    'token', response.data["token"].toString());
 
-              print(response.data["token"]);
-              print("token {$token}");
+                print(response.data["token"]);
+                print("token {$token}");
 
-              // showSuccessToast(
-              //     context, "Login", "You were logged successfully.");
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomeScreen(),
-                  ));
-            } else {
-              showErrorToast(context, "Error", "1Something went wrong...");
+                // showSuccessToast(
+                //     context, "Login", "You were logged successfully.");
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeScreen(),
+                    ));
+              } else {
+                showErrorToast(context, "Error", "1Something went wrong...");
+              }
+            }
+          }
+          if (userType == "Librarian") {
+            var response = await Dio().post(CommonService.URL + "/user/login",
+                data: {
+                  "user_type": userType,
+                  "librarian_email": email,
+                  "libraian_password": password
+                });
+            print("datasss" + response.data.toString());
+
+            if (response.statusCode == 200) {
+              if (response.data['code'] == 203 &&
+                  response.data['status'] == "Non-Authoritative Information") {
+                showErrorToast(context, "Email Error",
+                    response.data["message"].toString());
+              } else if (response.data['code'] == 203 &&
+                  response.data['status'] ==
+                      "Password - Non-Authoritative Information") {
+                showErrorToast(
+                    context, "Password Error", response.data["msg"].toString());
+              } else if (response.data["code"] == 202) {
+                await prefs.setString(
+                    'token', response.data["token"].toString());
+
+                print(response.data["token"]);
+                print("token {$token}");
+
+                // showSuccessToast(
+                //     context, "Login", "You were logged successfully.");
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeScreen(),
+                    ));
+              } else {
+                showErrorToast(context, "Error", "1Something went wrong...");
+              }
             }
           }
         } else {
