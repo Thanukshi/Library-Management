@@ -23,12 +23,12 @@ class InitState extends State<LoginScreen> {
           children: [
             Container(
               height: 300,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 borderRadius:
                     BorderRadius.only(bottomLeft: Radius.circular(90)),
                 color: Color(0xFF41A58D),
                 gradient: LinearGradient(
-                  colors: [new Color(0xFF41A58D), new Color(0xFF276955)],
+                  colors: [Color(0xFF41A58D), Color(0xFF276955)],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
@@ -39,7 +39,7 @@ class InitState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(
+                      margin: const EdgeInsets.only(
                         top: 50,
                       ),
                       child: Image.asset("assets/images/logo1.png"),
@@ -47,9 +47,9 @@ class InitState extends State<LoginScreen> {
                       width: 150,
                     ),
                     Container(
-                      margin: EdgeInsets.only(right: 20, top: 10),
+                      margin: const EdgeInsets.only(right: 20, top: 10),
                       alignment: Alignment.bottomRight,
-                      child: Text(
+                      child: const Text(
                         "Login",
                         style: TextStyle(
                           fontSize: 30,
@@ -62,12 +62,12 @@ class InitState extends State<LoginScreen> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(left: 20, right: 20, top: 70),
-              padding: EdgeInsets.only(left: 20, right: 20),
+              margin: const EdgeInsets.only(left: 20, right: 20, top: 70),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
                 color: Colors.grey[200],
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                       offset: Offset(0, 10),
                       blurRadius: 50,
@@ -76,11 +76,11 @@ class InitState extends State<LoginScreen> {
               ),
               alignment: Alignment.center,
               child: TextField(
-                cursorColor: Color(0xFF41A58D),
-                decoration: InputDecoration(
+                cursorColor: const Color(0xFF41A58D),
+                decoration: const InputDecoration(
                     icon: Icon(
                       Icons.email,
-                      color: Color(0xFF41A58D),
+                      color: Color(0xFF276955),
                     ),
                     hintText: "Enter your email",
                     enabledBorder: InputBorder.none,
@@ -91,12 +91,12 @@ class InitState extends State<LoginScreen> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(left: 20, right: 20, top: 20),
-              padding: EdgeInsets.only(left: 20, right: 20),
+              margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
                 color: Colors.grey[200],
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                       offset: Offset(0, 10),
                       blurRadius: 50,
@@ -106,11 +106,11 @@ class InitState extends State<LoginScreen> {
               alignment: Alignment.center,
               child: TextField(
                 obscureText: true,
-                cursorColor: Color(0xFF41A58D),
-                decoration: InputDecoration(
+                cursorColor: const Color(0xFF276955),
+                decoration: const InputDecoration(
                     icon: Icon(
                       Icons.vpn_key,
-                      color: Color(0xFF41A58D),
+                      color: Color(0xFF276955),
                     ),
                     hintText: "Enter your password",
                     enabledBorder: InputBorder.none,
@@ -121,10 +121,10 @@ class InitState extends State<LoginScreen> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: 20, right: 20),
+              margin: const EdgeInsets.only(top: 20, right: 20),
               alignment: Alignment.centerRight,
               child: GestureDetector(
-                child: Text("Forget Passwoed?"),
+                child: const Text("Forget Passwoed?"),
                 onTap: () => {},
               ),
             ),
@@ -132,28 +132,28 @@ class InitState extends State<LoginScreen> {
               onTap: () => {},
               //{loginUser(userEmail, userPass)},
               child: Container(
-                margin: EdgeInsets.only(left: 20, right: 20, top: 60),
-                padding: EdgeInsets.only(left: 20, right: 20),
+                margin: const EdgeInsets.only(left: 20, right: 20, top: 60),
+                padding: const EdgeInsets.only(left: 20, right: 20),
                 alignment: Alignment.center,
                 height: 50,
                 decoration: BoxDecoration(
-                    gradient: LinearGradient(
+                    gradient: const LinearGradient(
                       colors: [
-                        new Color(0xFF41A58D),
-                        (new Color(0xFF41A58D)),
+                        Color(0xFF276955),
+                        (Color(0xFF41A58D)),
                       ],
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                     ),
                     borderRadius: BorderRadius.circular(50),
-                    boxShadow: [
+                    boxShadow: const [
                       (BoxShadow(
                         offset: Offset(0, 10),
                         blurRadius: 50,
                         color: Color(0xffEEEEEE),
                       ))
                     ]),
-                child: Text(
+                child: const Text(
                   "Login",
                   style: TextStyle(
                     fontSize: 25,
@@ -163,11 +163,11 @@ class InitState extends State<LoginScreen> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: 10),
+              margin: const EdgeInsets.only(top: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Don't have an Account?  "),
+                  const Text("Don't have an Account?  "),
                   GestureDetector(
                     onTap: () => {
                       Navigator.push(
@@ -177,11 +177,11 @@ class InitState extends State<LoginScreen> {
                         ),
                       ),
                     },
-                    child: Text(
+                    child: const Text(
                       "Register",
                       style: TextStyle(
                         fontSize: 20,
-                        color: Color(0xFF41A58D),
+                        color: Color(0xFF276955),
                       ),
                     ),
                   )
