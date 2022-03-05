@@ -14,6 +14,7 @@ class InitState extends State<SplashScreen> {
   // var loadToken;
   @override
   void initState() {
+    // ignore: todo
     // TODO: implement initState
     super.initState();
     startTimer();
@@ -29,7 +30,7 @@ class InitState extends State<SplashScreen> {
 
   startTimer() async {
     var duration = const Duration(seconds: 3);
-    return new Timer(duration, loginRoute);
+    return Timer(duration, loginRoute);
   }
 
   loginRoute() {
@@ -59,19 +60,17 @@ class InitState extends State<SplashScreen> {
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color(0xFF41A58D),
               gradient: LinearGradient(
-                colors: [(new Color(0xFF276955)), (new Color(0xFF41A58D))],
+                colors: [(Color(0xFF276955)), (Color(0xFF41A58D))],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
             ),
           ),
           Center(
-            child: Container(
-              child: Image.asset("assets/images/logo1.png"),
-            ),
+            child: Image.asset("assets/images/logo1.png"),
           ),
         ],
       ),

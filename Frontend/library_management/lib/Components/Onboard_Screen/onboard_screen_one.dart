@@ -149,7 +149,7 @@ class OnboardScreenOne extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => OnboardScreenTwo(),
+                          builder: (_) => const OnboardScreenTwo(),
                         ),
                       );
                     },
